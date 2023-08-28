@@ -12,6 +12,8 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    implementation files('libs/J2Blocks.jar')
 }
 
 jar {
@@ -22,6 +24,8 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+
+    duplicatesStrategy = 'exclude'
 }
 
 application {

@@ -1,7 +1,18 @@
 package com.culottes.mazegen;
 
-import java.awt.Point;
 import java.io.File;
+
+import net.morbz.minecraft.blocks.CustomBlock;
+import net.morbz.minecraft.blocks.Material;
+import net.morbz.minecraft.level.FlatGenerator;
+import net.morbz.minecraft.level.GameType;
+import net.morbz.minecraft.level.IGenerator;
+import net.morbz.minecraft.level.Level;
+import net.morbz.minecraft.world.DefaultLayers;
+import net.morbz.minecraft.world.World;
+
+import java.awt.Point;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Stack;
@@ -9,8 +20,6 @@ import java.util.Stack;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-
-
 
 public class Maze {
 
@@ -130,5 +139,31 @@ public class Maze {
             System.out.println("Error:");
         }
         return image;
+    }
+
+    public void mazeToMinecraftWorld() throws IOException {
+        DefaultLayers layers = new DefaultLayers();
+        layers.setLayer(0, Material.STONE);
+
+        IGenerator generator = new FlatGenerator(layers);
+
+        Level level = new Level("MazeWorld", generator);
+        level.setMapFeatures(false);
+        level.setGameType(GameType.CREATIVE);
+        level.setSpawnPoint(0, 5, 0);
+
+        World world = new World(level, layers);
+
+        for(int x = 0; x < width; ++x) {
+            for(int z = 0; z < height; ++z) {
+                if (matrix[x][z] == 0) {
+                    for(int y = 1; y < 4; ++y) {
+                        world.setBlock(x, y, z, new CustomBlock(Material.WOOL.getValue(), 0, 0));
+                    }
+                }
+            }
+        }
+
+        world.save();
     }
 }
